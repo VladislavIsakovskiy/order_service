@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "image_service"
+version = "0.1.0"
+description = "Simple web service for managing local images"
+authors = ["visakovskiy <vladislav.isakovskiy@dataart.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+#FastAPI
+fastapi = "^0.75.2"
+uvicorn = "^0.17.6"
+python-multipart = "^0.0.5"
+
+#logs and env
+Werkzeug = "^2.0.2"
+python-dotenv = "^0.19.2"
+
+#additional
+docker = "^5.0.3"
+pre-commit = "^2.18.1"
+httpx = "^0.22.0"
+psycopg2 = "^2.9.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.2"
+pytest-asyncio = "^0.18.3"
+pytest-playwright = "^0.3.0"
+playwright = "^1.21.0"
+devtools = "^0.8.0"
+flake8 = "^4.0.1"  # pyflakes + pycodestyle + mccabe
+flake8-import-order = "^0.18.1"
+flake8-comprehensions = "^3.7.0"
+flake8-bugbear = "^21.11.29"
+flake8-mutable = "^1.2.0"
+mypy = "^0.930"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
