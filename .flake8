@@ -1,0 +1,12 @@
+[flake8]
+application_import_names = order_service
+max-line-length = 120
+ignore = B008
+#  I100  # There is need to knowledge about application package name and a lot of false positives
+exclude =
+    .git,
+    .idea,
+    .venv,
+    .mypy_cache,
+    .pytest_cache,
+    __pycache__,
