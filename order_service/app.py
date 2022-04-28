@@ -5,10 +5,13 @@ from os.path import join as path_join
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
+from logger_config import logger
+
 from order_service.endpoints import items, orders
 
 
 def create_app() -> FastAPI:
+    logger.info("Starting order service app!")
     app = FastAPI(
         title="Order service app",
         description="API for order service app",
