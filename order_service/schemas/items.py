@@ -1,24 +1,27 @@
-from typing import Optional
+from decimal import Decimal
 
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
+from pydantic import BaseModel
 
 
-class ItemIn(BaseModel):  # pylint: disable=too-few-public-methods
+class ItemIn(BaseModel):
     name: str
     description: str
-    price: int
+    cost: Decimal
     quantity: int
-    upc: Optional[int]
+    available: int
 
 
-class ItemOut(BaseModel):  # pylint: disable=too-few-public-methods
-    order_id: int
+class ItemOut(BaseModel):
+    item_id: int
 
 
-class Item(BaseModel):  # pylint: disable=too-few-public-methods
+class Item(BaseModel):
     item_id: str
     name: str
     description: str
-    price: int
+    cost: Decimal
     quantity: int
-    upc: Optional[int]
+    available: int
+
+    class Config:
+        orm_mode = True

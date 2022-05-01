@@ -11,7 +11,7 @@ COPY static ./static/
 
 RUN poetry install --no-dev -n
 
-EXPOSE 5555
+EXPOSE 8000
 
 CMD [".venv/bin/python", "-m", "order_service"]
 #CMD bash
