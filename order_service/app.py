@@ -7,6 +7,8 @@ from fastapi.staticfiles import StaticFiles
 
 from logger_config import logger
 
+from models.order import init_models
+
 from order_service.endpoints import items, orders
 
 
@@ -31,3 +33,8 @@ order_app.mount(
 
 order_app.include_router(orders.router, prefix="/v1")
 order_app.include_router(items.router, prefix="/v1")
+
+
+@order_app.on_event("startup")
+async def db_init():
+    await init_models()

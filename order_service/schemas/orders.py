@@ -1,28 +1,49 @@
-from typing import List, Optional
+from decimal import Decimal
+from typing import List
 
-from pydantic import BaseModel  # pylint: disable=no-name-in-module
-from pydantic.schema import datetime  # pylint: disable=no-name-in-module
-
-from order_service.schemas.items import Item
-
-
-class OrderIn(BaseModel):  # pylint: disable=too-few-public-methods
-    customer_id: Optional[int]
-    order_status_code: int
-    order_date: datetime
-    items: List[Item]
+from pydantic import BaseModel
+from pydantic.schema import datetime
 
 
-class OrderOut(BaseModel):  # pylint: disable=too-few-public-methods
+class OrderItem(BaseModel):
+    order_item_id: int
     order_id: int
-    order_date: datetime
-    items: List[Item]
+    item_id: int
+    quantity: int
+    order_item_amount: Decimal
+    closed_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
-class Order(BaseModel):  # pylint: disable=too-few-public-methods
+class OrderIn(BaseModel):
+    customer_id: int
+    status: str
+    created_at: datetime
+    closed_at: datetime
+    items: List[OrderItem]
+
+
+class OrderOut(BaseModel):
     order_id: int
-    customer_id: Optional[int]
-    order_status_code: int
-    order_date: datetime
-    total_amount: int
-    items: List[Item]
+    status: str
+    created_at: datetime
+    total_amount: Decimal
+    items: List[OrderItem]
+
+    class Config:
+        orm_mode = True
+
+
+class Order(BaseModel):
+    order_id: int
+    customer_id: int
+    status: str
+    created_at: datetime
+    closed_at: datetime
+    total_amount: Decimal
+    items: List[OrderItem]
+
+    class Config:
+        orm_mode = True

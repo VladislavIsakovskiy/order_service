@@ -4,7 +4,7 @@ services:
     image: orderservice:latest
     build: .  # folder which contain DockerFile
     ports:
-      - "5555:5555"
+      - "8000:8000"
     volumes:
       - ./tmp:/usr/local/app/tmp
 #    stdin_open: true  # for input in bash (DEBUG stage)
