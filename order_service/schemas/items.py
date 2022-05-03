@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -7,21 +8,30 @@ class ItemIn(BaseModel):
     name: str
     description: str
     cost: Decimal
-    quantity: int
     available: int
 
 
 class ItemOut(BaseModel):
-    item_id: int
+    id: int
+
+    class Config:
+        orm_mode = True
 
 
 class Item(BaseModel):
-    item_id: str
+    id: str
     name: str
     description: str
     cost: Decimal
-    quantity: int
     available: int
 
     class Config:
         orm_mode = True
+
+
+class ItemUpdateIn(BaseModel):
+    id: int
+    name: Optional[str] = None
+    description: Optional[str] = None
+    cost: Optional[Decimal] = None
+    available: Optional[int] = None

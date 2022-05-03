@@ -6,7 +6,7 @@ from pydantic.schema import datetime
 
 
 class OrderItem(BaseModel):
-    order_item_id: int
+    id: int
     order_id: int
     item_id: int
     quantity: int
@@ -26,7 +26,7 @@ class OrderIn(BaseModel):
 
 
 class OrderOut(BaseModel):
-    order_id: int
+    id: int
     status: str
     created_at: datetime
     total_amount: Decimal
@@ -37,7 +37,7 @@ class OrderOut(BaseModel):
 
 
 class Order(BaseModel):
-    order_id: int
+    id: int
     customer_id: int
     status: str
     created_at: datetime

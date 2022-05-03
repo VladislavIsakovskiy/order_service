@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from db import Base, engine
+from db import Base
 
 import sqlalchemy
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
@@ -59,15 +59,9 @@ class OrderItem(Base):
 class Item(Base):
     __tablename__ = "items"
 
-    id = Column("id", Integer, autoincrement=True, primary_key=True, nullable=False, index=True)
+    id = Column("id", Integer, primary_key=True, nullable=False, index=True)
     name = Column(String, nullable=False)
     description = Column(String, nullable=False)
     cost = Column(Numeric(12, 2), nullable=False)
     available = Column("available", Integer, nullable=False)
     order_item = relationship("OrderItem", back_populates="item", uselist=False)
-
-
-async def init_models():
-    async with engine.begin() as conn:
-        # await conn.run_sync(Base.metadata.drop_all)  # Uncomment this if you want to clear existed tables
-        await conn.run_sync(Base.metadata.create_all)
