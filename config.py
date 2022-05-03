@@ -8,6 +8,7 @@ basedir = path.abspath(path.dirname(__file__))
 load_dotenv(path.join(basedir, ".env"))
 
 # db
+ALEMBIC_DATABASE_DRIVER = environ.get("ALEMBIC_POSTGRES_DRIVER", "postgresql")
 DATABASE_DRIVER = environ.get("POSTGRES_DRIVER", "postgresql+asyncpg")
 DATABASE_HOST = environ.get("POSTGRES_HOST", "localhost")
 DATABASE_PORT = environ.get("POSTGRES_PORT", "5432")
