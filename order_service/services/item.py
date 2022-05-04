@@ -5,8 +5,8 @@ from models.order import Item
 
 from sqlalchemy.future import select
 
-from order_service.errors import EntityNotFoundError, ItemAlreadyExistsError, NoOneFieldWereSpecifiedForUpdate, \
-    WrongCostOrAvailableFieldsFormat
+from order_service.errors import EntityNotFoundError, ItemAlreadyExistsError, ItemQuantityMoreThanAvailable, \
+    NoOneFieldWereSpecifiedForUpdate, WrongCostOrAvailableFieldsFormat
 from order_service.services.base import BaseService
 
 
@@ -86,7 +86,7 @@ class ItemService(BaseService):
 
     @staticmethod
     async def _check_item_fields(cost: Optional[Decimal], available: Optional[int]):
-        if (cost <= 0) or (available <= 0):
+        if (cost and cost <= 0) or (available and available <= 0):
             raise WrongCostOrAvailableFieldsFormat
 
     @staticmethod
@@ -115,3 +115,18 @@ class ItemService(BaseService):
         await self.db_session.delete(item)
         await self.save_transaction()
         return f"Item with id {item_id} successfully deleted."
+
+    async def update_item_availability(self, item_id: int, quantity: int):
+        """
+        Update amount of available items in stock for current id
+        If requested quantity is more than available items raise ItemQuantityMoreThanAvailable
+        :param item_id: int
+        :param quantity: int
+        :return: None
+        """
+        item = await self._get_item_by_id(item_id)
+        if quantity > item.available:
+            raise ItemQuantityMoreThanAvailable(item.id, item.available)
+        item.available -= quantity
+        self.db_session.add(item)
+        await self.db_session.flush()

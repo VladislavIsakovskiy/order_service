@@ -1,5 +1,5 @@
 from decimal import Decimal
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 from pydantic.schema import datetime
@@ -11,18 +11,25 @@ class OrderItem(BaseModel):
     item_id: int
     quantity: int
     order_item_amount: Decimal
-    closed_at: datetime
+    closed_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True
 
 
+class ItemIn(BaseModel):
+    id: int
+    quantity: int
+
+
 class OrderIn(BaseModel):
     customer_id: int
-    status: str
-    created_at: datetime
-    closed_at: datetime
-    items: List[OrderItem]
+    items: List[ItemIn]
+
+
+class OrderUpdateIn(BaseModel):
+    id: int
+    items: List[ItemIn]
 
 
 class OrderOut(BaseModel):
@@ -41,7 +48,7 @@ class Order(BaseModel):
     customer_id: int
     status: str
     created_at: datetime
-    closed_at: datetime
+    closed_at: Optional[datetime] = None
     total_amount: Decimal
     items: List[OrderItem]
 
