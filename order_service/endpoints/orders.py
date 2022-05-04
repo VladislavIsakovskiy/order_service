@@ -1,9 +1,13 @@
 # type: ignore[no-untyped-def]
-from typing import List
+from db import get_session
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from order_service.schemas.orders import Order, OrderIn
+from fastapi_pagination import Page
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from order_service.schemas.orders import Order, OrderIn, OrderOut
 from order_service.services.order import OrderService
 
 router = APIRouter(
@@ -13,13 +17,13 @@ router = APIRouter(
 )
 
 
-@router.post("/{order_id}/", response_model=Order)
-async def upload_order(order_data: OrderIn):
-    new_order = await OrderService().create_order(order_data)
-    return new_order
+@router.post("/{order_id}/", response_model=OrderOut)
+async def upload_order(order_data: OrderIn, session: AsyncSession = Depends(get_session)):
+    new_order = await OrderService(session).create_order(order_data.customer_id, order_data.items)
+    return OrderOut.from_orm(new_order)
 
 
-@router.get("/", response_model=List[Order])
+@router.get("/", response_model=Page[Order])
 async def read_orders():
     orders = await OrderService().get_orders()
     return orders

@@ -36,15 +36,22 @@ class NoOneFieldWereSpecifiedForUpdate(APIError):
         super().__init__(f"No one field were specified for update {object_type} with id {object_id}.")
 
 
-class APIOrderNotFound(APIError):
+class OrderNotFound(APIError):
     status_code = 422
 
     def __init__(self, order_name: str):
         super().__init__(f"There is not order {order_name} at server.")
 
 
-class APIOrderNotDeleted(APIError):
+class OrderNotDeleted(APIError):
     status_code = 422
 
     def __init__(self, order_name: str):
         super().__init__(f"Something went wrong with deleting {order_name} order.")
+
+
+class ItemQuantityMoreThanAvailable(APIError):
+    status_code = 422
+
+    def __init__(self, item_id: int, available: int):
+        super().__init__(f"There are only {available} available Items with id {item_id}.")

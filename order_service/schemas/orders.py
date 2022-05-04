@@ -13,16 +13,15 @@ class OrderItem(BaseModel):
     order_item_amount: Decimal
     closed_at: datetime
 
-    class Config:
-        orm_mode = True
+
+class ItemIn(BaseModel):
+    id: int
+    quantity: int
 
 
 class OrderIn(BaseModel):
     customer_id: int
-    status: str
-    created_at: datetime
-    closed_at: datetime
-    items: List[OrderItem]
+    items: List[ItemIn]
 
 
 class OrderOut(BaseModel):
