@@ -16,7 +16,6 @@ class Order(Base):
 
     class Statuses:
         created = "created"
-        processing_fee = "paid"
         processed = "processed"
 
     id = Column("id", Integer, autoincrement=True, primary_key=True, nullable=False, index=True)
@@ -24,18 +23,18 @@ class Order(Base):
     status = Column(String, default=Statuses.created, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     closed_at = Column(DateTime)
-    _items = relationship("OrderItem", back_populates="order")
+    order_items = relationship("OrderItem", back_populates="order", lazy='selectin')
 
     @hybrid_property
     def items(self):
-        return [i for i in self._items]  # noqa
+        return [i for i in self.order_items]  # noqa
 
     @hybrid_property
     def total_amount(self):
         total_amount = sum(
             [
-                Decimal(order_item.total_item_amount)
-                for order_item in self._items
+                Decimal(order_item.order_item_amount)
+                for order_item in self.order_items
             ]
         )
         return total_amount
@@ -46,13 +45,13 @@ class OrderItem(Base):
 
     id = Column("id", Integer, autoincrement=True, primary_key=True, nullable=False, index=True)
     order_id = Column(Integer, ForeignKey("orders.id"))
-    order = relationship("Order", back_populates="_items", uselist=False)
+    order = relationship("Order", back_populates="order_items", uselist=False)
     item_id = Column(Integer, ForeignKey("items.id"))
-    item = relationship("Item", back_populates="order_item", uselist=False)
+    item = relationship("Item", back_populates="order_item", uselist=False, lazy='selectin')
     quantity = Column(Integer, nullable=False)
 
     @hybrid_property
-    def total_item_amount(self):
+    def order_item_amount(self):
         return Decimal(self.item.cost * self.quantity)
 
 
@@ -64,4 +63,4 @@ class Item(Base):
     description = Column(String, nullable=False)
     cost = Column(Numeric(12, 2), nullable=False)
     available = Column("available", Integer, nullable=False)
-    order_item = relationship("OrderItem", back_populates="item", uselist=False)
+    order_item = relationship("OrderItem", back_populates="item", uselist=False, lazy='selectin')

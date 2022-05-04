@@ -3,11 +3,11 @@ from db import get_session
 
 from fastapi import APIRouter, Depends
 
-from fastapi_pagination import Page
+from fastapi_pagination import Page, add_pagination, paginate
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from order_service.schemas.orders import Order, OrderIn, OrderOut
+from order_service.schemas.orders import Order, OrderIn, OrderOut, OrderUpdateIn
 from order_service.services.order import OrderService
 
 router = APIRouter(
@@ -24,24 +24,27 @@ async def upload_order(order_data: OrderIn, session: AsyncSession = Depends(get_
 
 
 @router.get("/", response_model=Page[Order])
-async def read_orders():
-    orders = await OrderService().get_orders()
-    return orders
+async def read_orders(session: AsyncSession = Depends(get_session)):
+    orders = await OrderService(session).get_orders()
+    return paginate([Order.from_orm(order) for order in orders])
 
 
 @router.get("/{order_id}/", response_model=Order)
-async def read_order(order_id: int):
-    order = await OrderService().get_order(order_id)
-    return order
+async def read_order(order_id: int, session: AsyncSession = Depends(get_session)):
+    order = await OrderService(session).get_order(order_id)
+    return Order.from_orm(order)
 
 
 @router.put("/{order_id}/", response_model=Order)
-async def update_order(order_id: int):
-    order = await OrderService().update_order(order_id)
-    return order
+async def update_order(order_data: OrderUpdateIn, session: AsyncSession = Depends(get_session)):
+    order = await OrderService(session).update_order(order_data.id, order_data.items)
+    return Order.from_orm(order)
 
 
 @router.delete("/{order_id}/", response_model=str)
-async def delete_order(order_id: int):
-    deleted_order_status_message = await OrderService().delete_order(order_id)
+async def delete_order(order_id: int, session: AsyncSession = Depends(get_session)):
+    deleted_order_status_message = await OrderService(session).delete_order(order_id)
     return deleted_order_status_message
+
+
+add_pagination(router)

@@ -54,6 +54,7 @@ async def request_log(request: Request, call_next):
     except Exception as exc:  # noqa # pylint: disable=broad-except
         logger.exception(str(exc))
         return JSONResponse(
+            status_code=500,
             content={"message": "Something went wrong!"},
         )
 

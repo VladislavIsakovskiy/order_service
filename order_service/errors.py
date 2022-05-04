@@ -12,7 +12,7 @@ class ItemAlreadyExistsError(APIError):
     status_code = 409
 
     def __init__(self, item_name: str):
-        super().__init__(f"Item with {item_name} already exists.")
+        super().__init__(f"Item with name {item_name} already exists.")
 
 
 class EntityNotFoundError(APIError):
