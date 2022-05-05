@@ -19,7 +19,7 @@ class ItemService(BaseService):
         :param description: str
         :param cost: Decimal
         :param available: int
-        :return: ItemOut
+        :return: Item
         """
         existed_item = await self._get_item_by_name(name)
         if existed_item:

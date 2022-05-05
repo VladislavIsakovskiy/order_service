@@ -1,11 +1,29 @@
 version: '3.9'  # Version of compose API (not Python)
+volumes:
+  postgres:
 services:
-  image_service:
+  order_service:
     image: orderservice:latest
     build: .  # folder which contain DockerFile
+    command: >
+      sh -c '/usr/local/app/wait-for-it.sh -t 60 postgres:5432
+      && .venv/bin/alembic upgrade head
+      && .venv/bin/python -m order_service'
     ports:
       - "8000:8000"
+    tty: true
+    stdin_open: true
     volumes:
-      - ./tmp:/usr/local/app/tmp
+      - ./wait-for-it.sh:/usr/local/app/wait-for-it.sh
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-order_service}
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5433:5432"
 #    stdin_open: true  # for input in bash (DEBUG stage)
 #    tty: true  # for using as terminal (DEBUG stage)
