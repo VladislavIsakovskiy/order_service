@@ -51,7 +51,7 @@ async def request_log(request: Request, call_next):
         else:
             logger.warning(f"{request.method} {request.url} Status code: {response.status_code}")
         return response
-    except Exception as exc:  # noqa # pylint: disable=broad-except
+    except Exception as exc:  # noqa
         logger.exception(str(exc))
         return JSONResponse(
             status_code=500,

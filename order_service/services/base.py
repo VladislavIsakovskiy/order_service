@@ -8,6 +8,6 @@ class BaseService:
     async def save_transaction(self):
         try:
             await self.db_session.commit()
-        except Exception as e:
+        except Exception:
             await self.db_session.rollback()
-            raise e
+            raise
