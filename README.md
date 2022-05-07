@@ -24,3 +24,7 @@ To start service using Docker:
 1. Specify fields that .env.example contains
 2. Change file name .env.example to .env
 3. Use command: `docker-compose up --build`
+
+## Using OpenAPI (Swagger)
+
+Open in browser localhost:8000/docs
