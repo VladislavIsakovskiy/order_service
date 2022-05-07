@@ -1,4 +1,5 @@
-#!/usr/bin/env /bin/bash
+#!/usr/bin/env bash
+# If you will have error with path try to change to /bin/bash
 # Use this script to test if a given TCP host/port are available
 
 WAITFORIT_cmdname=${0##*/}
