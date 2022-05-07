@@ -27,4 +27,4 @@ To start service using Docker:
 
 ## Using OpenAPI (Swagger)
 
-Open in browser localhost:8000/docs
+Open in browser [url](localhost:8000/docs)
