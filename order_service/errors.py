@@ -22,11 +22,18 @@ class EntityNotFoundError(APIError):
         super().__init__(f"{object_type} with id {object_id} does not exist.")
 
 
-class WrongCostOrAvailableFieldsFormat(APIError):
+class WrongAmountError(APIError):
     status_code = 422
 
-    def __init__(self):  # type: ignore
-        super().__init__("Cost and Available for Item should be more than 0.")
+    def __init__(self, object_type: str, field_name: str):  # type: ignore
+        super().__init__(f"{field_name} for {object_type} should be greater than 0.")
+
+
+class WrongQuantityError(APIError):
+    status_code = 422
+
+    def __init__(self, object_id: int):  # type: ignore
+        super().__init__(f"Quantity for Item with id {object_id} should be greater than 0.")
 
 
 class NoOneFieldWereSpecifiedForUpdate(APIError):
@@ -34,20 +41,6 @@ class NoOneFieldWereSpecifiedForUpdate(APIError):
 
     def __init__(self, object_type: str, object_id: int):
         super().__init__(f"No one field were specified for update {object_type} with id {object_id}.")
-
-
-class OrderNotFound(APIError):
-    status_code = 422
-
-    def __init__(self, order_name: str):
-        super().__init__(f"There is not order {order_name} at server.")
-
-
-class OrderNotDeleted(APIError):
-    status_code = 422
-
-    def __init__(self, order_name: str):
-        super().__init__(f"Something went wrong with deleting {order_name} order.")
 
 
 class ItemQuantityMoreThanAvailable(APIError):

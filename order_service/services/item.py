@@ -6,7 +6,7 @@ from models.order import Item
 from sqlalchemy.future import select
 
 from order_service.errors import EntityNotFoundError, ItemAlreadyExistsError, ItemQuantityMoreThanAvailable, \
-    NoOneFieldWereSpecifiedForUpdate, WrongCostOrAvailableFieldsFormat
+    NoOneFieldWereSpecifiedForUpdate, WrongAmountError
 from order_service.services.base import BaseService
 
 
@@ -85,9 +85,13 @@ class ItemService(BaseService):
         return item
 
     @staticmethod
-    async def _check_item_fields(cost: Optional[Decimal], available: Optional[int]):
-        if (cost and cost <= 0) or (available and available <= 0):
-            raise WrongCostOrAvailableFieldsFormat
+    async def _check_item_fields(cost: Optional[Decimal] = None, available: Optional[int] = None):
+        if cost is not None:
+            if cost <= 0:
+                raise WrongAmountError(Item.__name__, "Cost")
+        if available is not None:
+            if available <= 0:
+                raise WrongAmountError(Item.__name__, "Available")
 
     @staticmethod
     async def _update_item_fields(item: Item, name: Optional[str], description: Optional[str],
