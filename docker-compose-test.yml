@@ -3,7 +3,7 @@ volumes:
   postgres:
 services:
   order_service:
-    image: orderservice:latest
+    image: testorderservice:latest
     build: .  # folder which contain DockerFile
 #    command: /bin/sh
     command: >
@@ -11,7 +11,7 @@ services:
       && .venv/bin/alembic upgrade head
       && .venv/bin/python -m order_service'
     ports:
-      - "8000:8000"
+      - "8001:8000"
     tty: true
     stdin_open: true
     volumes:
@@ -25,6 +25,6 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5433:5432"
+      - "5434:5432"
 #    stdin_open: true  # for input in bash (DEBUG stage)
 #    tty: true  # for using as terminal (DEBUG stage)

@@ -8,7 +8,7 @@ from models.order import Order, OrderItem
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from order_service.errors import EntityNotFoundError
+from order_service.errors import EntityNotFoundError, WrongQuantityError
 from order_service.schemas.orders import ItemIn
 from order_service.services.base import BaseService
 from order_service.services.item import ItemService
@@ -29,6 +29,7 @@ class OrderService(BaseService):
         """
         new_order = await self._create_order_instance(customer_id)
         for item in items:
+            await self._check_item_quantity(item.id, item.quantity)
             await self._create_order_item(new_order.id, item)
         await self.save_transaction()
         result_order_query = await self.db_session.execute(
@@ -87,6 +88,8 @@ class OrderService(BaseService):
         :param items: List[ItemIn]
         :return: Order
         """
+        for item in items:
+            await self._check_item_quantity(item.id, item.quantity)
         order = await self._get_order_by_id(order_id)
         order_items_for_delete = await self._get_order_items_for_delete(order.items, items)
         order_items_for_update = await self._get_order_items_for_update(order.items, items)
@@ -99,6 +102,10 @@ class OrderService(BaseService):
         await self.save_transaction()
         await self.db_session.refresh(order)
         return order
+
+    async def _check_item_quantity(self, item_id: int, quantity: int):
+        if quantity <= 0:
+            raise WrongQuantityError(item_id)
 
     async def _get_order_items_for_delete(self, order_items: List[OrderItem], items: List[ItemIn]) -> List[OrderItem]:
         current_item_ids = {item.id for item in items}

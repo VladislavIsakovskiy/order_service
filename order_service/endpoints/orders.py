@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.post("/{order_id}/", response_model=OrderOut)
+@router.post("/", response_model=OrderOut)
 async def upload_order(order_data: OrderIn, session: AsyncSession = Depends(get_session)):
     new_order = await OrderService(session).create_order(order_data.customer_id, order_data.items)
     return OrderOut.from_orm(new_order)
